@@ -2,19 +2,18 @@ var mysql = require("mysql");
 var inquire = require("inquirer");
 
 var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : '',
-  database : 'bamazon'
+  host: "localhost",
+  user: "root",
+  port: 3306,
+  password: '',
+  database: "bamazon"
 });
 
-connection.connect(function(err) {
-  if (err) {
-    console.error('error connecting: ' + err.stack);
-    return;
-  }
- 
-  console.log('connected as id ' + connection.threadId);
+connection.connect(function(err, res) {
+  if (err) throw err; 
+  console.log("connected as id " + connection.threadId);
+  
+  showComics();
 });
 
 function stop() {
@@ -22,13 +21,15 @@ function stop() {
 }
 
 function showComics() {
-	connection.query("Select item_id, comic_name, price FROM comics", function(err, res){
+	connection.query("Select id, comic_name, price FROM comics", function(err, res){
 		console.log("\nListed below are the comics we have available.\n");
 		for (i = 0; i < res.length; i++) {
-			console.log(res[i].item_id, res[i].comic_name, res[i].price);
+			console.log(res[i].id, res[i].comic_name, res[i].price);
 		};
+		
 		pickComic();
 	});
+}
 
 function pickComic() {
 	inquire.prompt([
@@ -45,7 +46,7 @@ function pickComic() {
 	]).then(function(answers){
 		connection.query("Select * FROM comics WHERE ?",
 		{
-			item_id: answers.id
+			id: answers.id
 		},
 		function(err,res) {
 			var item = res[0];
@@ -63,8 +64,9 @@ function pickComic() {
 
 					[{
 						quantity: stock
-					},{
-						item_id: answer.id
+					},
+					{
+						item_id: answers.id
 					}],
 
 					function(err, res) {
@@ -76,5 +78,4 @@ function pickComic() {
 			}
 		});
 	});
-};
 };
