@@ -8,4 +8,4 @@ Run the schema.sql file to create database we will be using
 Use node to run the JS file
 
 # GIF
-(screencap.gif)
+![Example](screencap.gif)
