@@ -39,7 +39,7 @@ function pickComic() {
 		message: "Which comic ID would you like to purchase?"
 	},
 	{
-		name: "qty",
+		name: "quantity",
 		message: "How many comics would you like?"
 	}
 
@@ -50,7 +50,9 @@ function pickComic() {
 		},
 		function(err,res) {
 			var item = res[0];
+
 			if (err) throw err;
+			
 			var stock = item.quantity;
 
 			if (answers.quantity > stock) {
